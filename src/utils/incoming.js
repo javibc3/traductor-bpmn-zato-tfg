@@ -8,7 +8,7 @@ export const getIncomingElements = (document, element, incomingElements) => {
         const incomingId = incomingElements[index];
         const incomingFlow = document.getElementById(incomingId.textContent);
         const incomingElement = document.getElementById(incomingFlow.getAttribute('sourceRef'));
-        if (isParallelGateway(element)) {
+        if (isParallelGateway(element) && incomingElements.length > 1) {
             inString += getTokenTemplate(`parser.${getTaskName(incomingElement)}`);
         }
     }

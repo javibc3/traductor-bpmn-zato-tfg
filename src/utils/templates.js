@@ -1,3 +1,5 @@
+import { getBucketName, getKeyName } from "./args.js";
+
 export const serviceTemplate = (name) => {
     return `# -*- coding: utf-8 -*-
 # zato: ide-deploy=True
@@ -47,11 +49,11 @@ export const outgoingConditionalTemplate = (name) => {
 
 export const setTokenTemplate = (name) => {
     return `
-        with self.cloud.aws.s3.get('My Connection').conn.client() as client:
+        with self.cloud.aws.s3.get('${getKeyName()}').conn.client() as client:
 
             key = '${name}'
             value = '${name}'
-            bucket = 'Replace with your bucket name'
+            bucket = '${getBucketName()}'
 
             client.set(key, value, bucket)
     
@@ -60,10 +62,10 @@ export const setTokenTemplate = (name) => {
 
 export const getTokenTemplate = (name) => {
     return `
-        with self.cloud.aws.s3.get('My Connection').conn.client() as client:
+        with self.cloud.aws.s3.get(${getKeyName()}).conn.client() as client:
 
             key = '${name}'
-            bucket = 'Replace with your bucket name'
+            bucket = '${getBucketName()}'
 
             while (client.get(key, bucket) == None):
                 pass

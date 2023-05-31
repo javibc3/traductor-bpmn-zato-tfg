@@ -14,6 +14,10 @@ export const isExclusiveGateway = (element) => {
     return element.tagName == 'exclusiveGateway'.toUpperCase();
 };
 
+export const isStartEvent = (element) => {
+    return element.tagName == 'startEvent'.toUpperCase()
+};
+
 export const isEndEvent = (element) => {
     return element.tagName == 'endEvent'.toUpperCase()
 };
