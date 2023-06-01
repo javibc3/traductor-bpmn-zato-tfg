@@ -62,7 +62,7 @@ export const setTokenTemplate = (name) => {
 
 export const getTokenTemplate = (name) => {
     return `
-        with self.cloud.aws.s3.get(${getKeyName()}).conn.client() as client:
+        with self.cloud.aws.s3.get('${getKeyName()}').conn.client() as client:
 
             key = '${name}'
             bucket = '${getBucketName()}'
