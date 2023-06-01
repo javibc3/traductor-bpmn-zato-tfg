@@ -32,7 +32,8 @@ class ${name}(QuantumService):
 }
 
 export const outgoingCallTemplate = (name) => {
-    return `        self.invoke_async('${name}', 'payload')\n`;
+    return `        
+        self.invoke_async('${name}', 'payload')\n`;
 }
 
 export const outgoingStartConditionalTemplate = (name) => {
@@ -47,7 +48,7 @@ export const outgoingConditionalTemplate = (name) => {
             self.invoke_async('${name}', 'payload')\n`;
 }
 
-export const setTokenTemplate = (name) => {
+export const setS3TokenTemplate = (name) => {
     return `
         with self.cloud.aws.s3.get('${getKeyName()}').conn.client() as client:
 
@@ -60,7 +61,7 @@ export const setTokenTemplate = (name) => {
 `
 }
 
-export const getTokenTemplate = (name) => {
+export const getS3TokenTemplate = (name) => {
     return `
         with self.cloud.aws.s3.get('${getKeyName()}').conn.client() as client:
 
@@ -72,5 +73,19 @@ export const getTokenTemplate = (name) => {
             client.delete(key, bucket)
 
 `
+}
+
+export const setRedisTokenTemplate = (name) => {
+    return `
+        self.kvdb.conn.set('${name}', '${name}')
+    `
+}
+
+export const getRedisTokenTemplate = (name) => {
+    return `
+        while (self.kvdb.conn.get('${name}') == None):
+            pass
+        self.kvdb.conn.delete('${name}')
+    `
 }
 
