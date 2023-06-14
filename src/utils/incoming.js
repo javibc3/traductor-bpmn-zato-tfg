@@ -1,5 +1,6 @@
+import { getServiceProvider } from "./args.js";
 import { getTaskName } from "./names.js";
-import { getRedisTokenTemplate } from "./templates.js";
+import { getRedisTokenTemplate, getS3TokenTemplate } from "./templates.js";
 import { isParallelGateway } from "./types.js";
 
 export const getIncomingElements = (document, element, incomingElements) => {
@@ -9,7 +10,11 @@ export const getIncomingElements = (document, element, incomingElements) => {
         const incomingFlow = document.getElementById(incomingId.textContent);
         const incomingElement = document.getElementById(incomingFlow.getAttribute('sourceRef'));
         if (isParallelGateway(element) && incomingElements.length > 1) {
-            inString += getRedisTokenTemplate(`parser.${getTaskName(incomingElement)}.${getTaskName(element)}`);
+            if (getServiceProvider() === 'redis') {
+                inString += getRedisTokenTemplate(`parser.${getTaskName(incomingElement)}.${getTaskName(element)}`);
+            } else {
+                inString += getS3TokenTemplate(`parser.${getTaskName(incomingElement)}.${getTaskName(element)}`);
+            }
         }
     }
     return inString;

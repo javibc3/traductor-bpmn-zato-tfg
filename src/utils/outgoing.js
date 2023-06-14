@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { getTaskName } from "./names.js";
-import { outgoingCallTemplate, outgoingConditionalTemplate, outgoingStartConditionalTemplate, setRedisTokenTemplate } from "./templates.js";
+import { outgoingCallTemplate, outgoingConditionalTemplate, outgoingStartConditionalTemplate, setRedisTokenTemplate, setS3TokenTemplate } from "./templates.js";
 import { isExclusiveGateway, isParallelGateway } from "./types.js";
 
 export const getOutgoingElements = (document, element, outgoingElements) => {
@@ -11,8 +11,12 @@ export const getOutgoingElements = (document, element, outgoingElements) => {
         const outgoingFlow = document.getElementById(outgoingId.textContent);
         const outgoingElement = document.getElementById(outgoingFlow.getAttribute('targetRef'));
         if (isParallelGateway(outgoingElement) && outgoingElement.getElementsByTagName('incoming').length > 1) {
-            outString += setRedisTokenTemplate(`parser.${getTaskName(element)}.${getTaskName(outgoingElement)}`);
-            if (!exists(document, outgoingElement.getElementsByTagName('incoming'))) {
+            if (getServiceProvider() === 'redis') {
+                outString += setRedisTokenTemplate(`parser.${getTaskName(element)}.${getTaskName(outgoingElement)}`);
+            } else {
+                outString += setS3TokenTemplate(`parser.${getTaskName(element)}.${getTaskName(outgoingElement)}`);
+            }
+            if (!existsElements(document, outgoingElement.getElementsByTagName('incoming'))) {
                 outString += outgoingCallTemplate(`parser.${getTaskName(outgoingElement)}`);
             }
         }
@@ -32,7 +36,7 @@ export const getOutgoingElements = (document, element, outgoingElements) => {
     return outString;
 }
 
-const exists = (document, incomingElements) => {
+const existsElements = (document, incomingElements) => {
     for (let index = 0; index < incomingElements.length; index++) {
         const incomingId = incomingElements[index];
         const incomingFlow = document.getElementById(incomingId.textContent);
