@@ -2,6 +2,7 @@ import fs from 'fs';
 import { getTaskName } from "./names.js";
 import { outgoingCallTemplate, outgoingConditionalTemplate, outgoingStartConditionalTemplate, setRedisTokenTemplate, setS3TokenTemplate } from "./templates.js";
 import { isExclusiveGateway, isParallelGateway } from "./types.js";
+import { getServiceProvider } from './args.js';
 
 export const getOutgoingElements = (document, element, outgoingElements) => {
     let outString = '';
