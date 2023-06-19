@@ -51,7 +51,7 @@ try {
 
     }
 } catch (error) {
-    console.log('Error: Invalid diagram.');
+    console.error(error);
     fs.rmSync(outputDirectory, { recursive: true, force: true });
     process.exit(1);
 }

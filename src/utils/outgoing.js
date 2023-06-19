@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { getTaskName } from "./names.js";
-import { outgoingCallTemplate, outgoingConditionalTemplate, outgoingStartConditionalTemplate, setRedisTokenTemplate, setS3TokenTemplate } from "./templates.js";
-import { isExclusiveGateway, isParallelGateway } from "./types.js";
+import { outgoingClassicCallTemplate, outgoingConditionalTemplate, outgoingQuantumCallTemplate, outgoingStartConditionalTemplate, setRedisTokenTemplate, setS3TokenTemplate } from "./templates.js";
+import { isExclusiveGateway, isParallelGateway, isQuantumTask } from "./types.js";
 import { getServiceProvider } from './args.js';
 
 export const getOutgoingElements = (document, element, outgoingElements) => {
@@ -18,7 +18,11 @@ export const getOutgoingElements = (document, element, outgoingElements) => {
                 outString += setS3TokenTemplate(`parser.${getTaskName(element)}.${getTaskName(outgoingElement)}`);
             }
             if (!existsElements(document, outgoingElement.getElementsByTagName('incoming'))) {
-                outString += outgoingCallTemplate(`parser.${getTaskName(outgoingElement)}`);
+                if(isQuantumTask(outgoingElement))  {
+                    outString += outgoingQuantumCallTemplate(`parser.${getTaskName(outgoingElement)}`, outgoingElement);
+                } else {
+                    outString += outgoingClassicCallTemplate(`parser.${getTaskName(outgoingElement)}`);
+                }
             }
         }
         else if (isExclusiveGateway(element) && outgoingElements.length > 1) {
@@ -31,7 +35,12 @@ export const getOutgoingElements = (document, element, outgoingElements) => {
             conditionalIndex++;
         }
         else {
-            outString += outgoingCallTemplate(`parser.${getTaskName(outgoingElement)}`);
+            if(isQuantumTask(outgoingElement))  {
+                outString += outgoingQuantumCallTemplate(`parser.${getTaskName(outgoingElement)}`, outgoingElement);
+            } else {
+                outString += outgoingClassicCallTemplate(`parser.${getTaskName(outgoingElement)}`);
+            }
+                
         }
     }
     return outString;

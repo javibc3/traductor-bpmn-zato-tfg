@@ -1,4 +1,5 @@
 import { getBucketName, getKeyName } from "./args.js";
+import { getQuantumAttributes } from "./quantumArguments.js";
 
 export const serviceTemplate = (name) => {
     return `# -*- coding: utf-8 -*-
@@ -13,7 +14,7 @@ class ${name}(Service):
 `;
 }
 
-export const quantumServiceTemplate = (name) => {
+export const baseQuantumServiceTemplate = (name) => {
     return `# -*- coding: utf-8 -*-
 # zato: ide-deploy=True
 
@@ -31,9 +32,50 @@ class ${name}(QuantumService):
 `;
 }
 
-export const outgoingCallTemplate = (name) => {
+export const ibmQuantumServiceTemplate = (name) => {
+    return `# -*- coding: utf-8 -*-
+# zato: ide-deploy=True
+
+# Zato
+from zato.server.service import IBMQuantumService
+
+class ${name}(IBMQuantumService):
+    name = 'parser.${name}'
+
+    def circuit(self):
+        # Replace this with your circuit
+    
+    def before_circit_execution(self):
+
+`;
+}
+
+export const amazonQuantumServiceTemplate = (name) => {
+    return `# -*- coding: utf-8 -*-
+# zato: ide-deploy=True
+
+# Zato
+from zato.server.service import AWSQuantumService
+
+class ${name}(AWSQuantumService):
+    name = 'parser.${name}'
+
+    def circuit(self):
+        # Replace this with your circuit
+    
+    def before_circit_execution(self):
+
+`;
+}
+
+export const outgoingClassicCallTemplate = (name) => {
     return `        
         self.invoke_async('${name}', 'payload')\n`;
+}
+
+export const outgoingQuantumCallTemplate = (name, element) => {
+    return `        
+        self.invoke_async('${name}', 'payload', ${getQuantumAttributes(element)})\n`;
 }
 
 export const outgoingStartConditionalTemplate = (name) => {
