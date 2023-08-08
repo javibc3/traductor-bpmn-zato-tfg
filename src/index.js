@@ -50,6 +50,8 @@ try {
         }
 
     }
+    console.log('🎉 Done!: The result can be seen in the ./output folder');
+
 } catch (error) {
     console.error(error);
     fs.rmSync(outputDirectory, { recursive: true, force: true });
